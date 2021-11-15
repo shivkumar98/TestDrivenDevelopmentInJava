@@ -10,7 +10,7 @@ public class ValidateISBN {
 		int[] integerArray = new int[stringArray.length];
 		
 		if (integerArray.length != 10) {
-			return false;
+			throw new NumberFormatException();
 		}
 		
 		for (int j =0; j<stringArray.length;j++) {

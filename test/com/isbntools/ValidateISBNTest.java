@@ -27,16 +27,14 @@ public class ValidateISBNTest {
 		assertFalse(validateISBN.checkISBN("0198534540"));
 	}
 	
-	@Test
-	public void checkThatInsertingEmptyString_returnsFalse() {
-		ValidateISBN validateISBN=new ValidateISBN();
-		assertFalse(validateISBN.checkISBN(""));
-	}
 	
-	@Test
-	public void checkThat11DigitISBN_returnsFalse() {
+	
+
+	
+	@Test(expected = NumberFormatException.class)
+	public void checkNineDigitISNBThrowsException() {
 		ValidateISBN validateISBN=new ValidateISBN();
-		assertFalse(validateISBN.checkISBN("12345678901"));
+		assertFalse(validateISBN.checkISBN("123456789"));
 	}
 
 }
