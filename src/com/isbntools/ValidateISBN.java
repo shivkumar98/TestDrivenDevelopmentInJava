@@ -6,35 +6,26 @@ public class ValidateISBN {
 
 	public static boolean checkISBN(String isbn) {
 		
-		if (isbn.length() == 9) {
-			throw new NumberFormatException("Please provide a 10 digit length isbn");
+		if (isbn.length()!=10 && isbn.length()!=13) {
+			throw new NumberFormatException("Please provide an ISBN with either 10 or 13 digits");
 		}
 		
 		if (isbn.length() == 13) {
-			int Digit13Sum = 0;
-			
-			for (int i =0; i<isbn.length();i++) {
-				int multiplier = 0;
-				if (i%2 == 0) {
-					multiplier = 1;}
-				else {
-					multiplier = 3;
-				}
-				Digit13Sum += multiplier*Integer.parseInt(isbn.split("")[i]);
-			}
-			
-			if (Digit13Sum%10 == 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return IsThisAValid13DigitISBN(isbn);
 		}
 		
 		
 		
 		
 		
-		//convert string to int array
+		else if (isbn.length() == 10) {
+		return isThisAValid10DigitISBN(isbn);
+		}
+		else return false;
+		
+	}
+
+	private static boolean isThisAValid10DigitISBN(String isbn) {
 		int[] isbnDigits = new int[10];
 		String[] isbnSplit = isbn.split("");
 
@@ -63,7 +54,26 @@ public class ValidateISBN {
 		} else {
 			return false;
 		}
+	}
+
+	private static boolean IsThisAValid13DigitISBN(String isbn) {
+		int Digit13Sum = 0;
 		
+		for (int i =0; i<isbn.length();i++) {
+			int multiplier = 0;
+			if (i%2 == 0) {
+				multiplier = 1;}
+			else {
+				multiplier = 3;
+			}
+			Digit13Sum += multiplier*Integer.parseInt(isbn.split("")[i]);
+		}
+		
+		if (Digit13Sum%10 == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public static void main(String[] args) {
