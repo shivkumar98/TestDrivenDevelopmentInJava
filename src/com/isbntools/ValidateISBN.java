@@ -13,13 +13,8 @@ public class ValidateISBN {
 		if (isbn.length() == 13) {
 			return IsThisAValid13DigitISBN(isbn);
 		}
-		
-		
-		
-		
-		
 		else if (isbn.length() == 10) {
-		return isThisAValid10DigitISBN(isbn);
+			return isThisAValid10DigitISBN(isbn);
 		}
 		else return false;
 		
@@ -42,18 +37,13 @@ public class ValidateISBN {
 			}
 		}
 		
-		//verification algorithm:
 		int sum = 0;
 		for (int j =0;j<isbnDigits.length;j++) {
 			sum += isbnDigits[j]*(10-j);
 		}
 		
-		//working out sum%11
-		if (sum %11 == 0) {
-			return true;
-		} else {
-			return false;
-		}
+	
+		return sum%11 == 0;
 	}
 
 	private static boolean IsThisAValid13DigitISBN(String isbn) {
@@ -69,11 +59,7 @@ public class ValidateISBN {
 			Digit13Sum += multiplier*Integer.parseInt(isbn.split("")[i]);
 		}
 		
-		if (Digit13Sum%10 == 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return Digit13Sum%10 == 0;
 	}
 	
 	public static void main(String[] args) {
