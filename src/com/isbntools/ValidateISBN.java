@@ -6,61 +6,70 @@ public class ValidateISBN {
 
 	public static boolean checkISBN(String isbn) {
 		
-		String[] stringArray = isbn.split("");
-		int[] integerArray = new int[stringArray.length];
-		
-		if (integerArray.length != 10) {
-			throw new NumberFormatException();
+		if (isbn.length() == 9) {
+			throw new NumberFormatException("Please provide a 10 digit length isbn");
 		}
 		
-		
-		
-		for (int j =0; j<stringArray.length;j++) {
-			if (j!=9) {
-				if (!Character.isDigit(stringArray.toString().charAt(j))) {
-				throw new NumberFormatException("please provide ISBN with only digits");
-				} else {
-					integerArray[j]=Integer.parseInt(stringArray[j]) ;
+		if (isbn.length() == 13) {
+			int Digit13Sum = 0;
+			
+			for (int i =0; i<isbn.length();i++) {
+				int multiplier = 0;
+				if (i%2 == 0) {
+					multiplier = 1;}
+				else {
+					multiplier = 3;
 				}
-			} else { // j=9
-				if (stringArray.toString().charAt(j)== 'X') {
-					integerArray[j] = 10;
-				} else {
-				integerArray[j] = Integer.parseInt(stringArray[j]) ;
-				}
+				Digit13Sum += multiplier*Integer.parseInt(isbn.split("")[i]);
+			}
+			
+			if (Digit13Sum%10 == 0) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 		
+		
+		
+		
+		
+		//convert string to int array
+		int[] isbnDigits = new int[10];
+		String[] isbnSplit = isbn.split("");
+
+		for (int i =0; i<isbn.length();i++) {
+			if(!(Character.isDigit(isbn.charAt(i))) && (i!=9) ) {
+				throw new NumberFormatException("Please provide a string only containing digits");
+			}
+			 else if ((isbn.charAt(i)=='x' || isbn.charAt(i)=='X')
+					 	&& i==9) {
+				 isbnDigits[i]=10;
+				
+			} else {
+				isbnDigits[i]=Integer.parseInt(isbnSplit[i]);
+			}
+		}
+		
+		//verification algorithm:
 		int sum = 0;
+		for (int j =0;j<isbnDigits.length;j++) {
+			sum += isbnDigits[j]*(10-j);
+		}
 		
-			sum = sum +10*integerArray[0]
-					+ 9*integerArray[1]
-					+ 8*integerArray[2]
-					+ 7*integerArray[3]
-					+ 6*integerArray[4]
-					+ 5*integerArray[5]
-					+ 4*integerArray[6]
-					+ 3*integerArray[7]
-					+ 2*integerArray[8]
-					+ 1*integerArray[9];
-					
-		System.out.println(sum);
-		int remainder = sum % 11;
-		
-		if (remainder == 0
-				) {
+		//working out sum%11
+		if (sum %11 == 0) {
 			return true;
 		} else {
 			return false;
 		}
-	
 		
 	}
 	
 	public static void main(String[] args) {
-		checkISBN("0198534540");
+		checkISBN("helloworld");
 		
-		System.out.println(Integer.parseInt("X"));
+		
 	}
 
 }
