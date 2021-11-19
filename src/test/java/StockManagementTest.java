@@ -1,77 +1,65 @@
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.mock;
 
-import java.util.List;
-
+import org.junit.Before;
 import org.junit.Test;
+
+
 
 public class StockManagementTest {
 	
-	@Test
-	public void getLocatorCodeWorks() {
-		String isbn = "0141023570";
-		ExternalDataService externalDataServiceImp = new ExternalDataService() {
-			
-			public Book lookup(String isbn) {
-				return new Book(isbn, "J. Steinback", "Of Mice and Men");
-			}
-		};
-		
-		ExternalDataService testDataService = new ExternalDataService() {
-			
-		
-			public Book lookup(String isbn) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
-		
-		StockManager stockManager = new StockManager();
-		stockManager.setWebServive(externalDataServiceImp);
-		stockManager.setDatabaseService(testDataService);
-		String LocatorCode = stockManager.getLocator(isbn);
-		assertEquals("3570S4", LocatorCode);
+	ExternalDataService testWebService;
+	ExternalDataService testDatabaseService;
+	StockManager stockManager;
+	String isbn = "0140177396";
+	
+	@Before
+	public void setup() {
+		System.out.println("setup running");
+		testWebService = mock(ExternalDataService.class);
+		testDatabaseService = mock(ExternalDataService.class);
+		stockManager = new StockManager();
+		stockManager.setDatabaseService(testDatabaseService);
+		stockManager.setWebServive(testWebService);
 	}
 	
-	//testing behaviour 
-	// is book in local db? no? then use webService
-	// we now want to test qhich method is called
-	//database will call BookLookup
-	// if nothing returned WebService will call lookup
 	
-	//if data is in database use database data
 	@Test
-	public void dataBaseIsUsedIfDateInDatabase() {
-		ExternalDataService dataService = mock(ExternalDataService.class);
-		ExternalDataService webService = mock(ExternalDataService.class);
+	public void testCanGetACorrectLocatorCode() {
+
+
+		stockManager.setWebServive(testWebService);
+		stockManager.setDatabaseService(testDatabaseService);
 		
-		/*
-		 * String isbn = "0141023570";
-		StockManager stockManager = new StockManager();
-		stockManager.setWebServive(webService);
-		stockManager.setDatabaseService(dataService);
-		String LocatorCode = stockManager.getLocator(isbn);
-		assertEquals("3570S4", LocatorCode);
-		 */
-		
+		when(testDatabaseService.lookup(anyString())).thenReturn(new Book("0140177396", "J. Steinback", "Of Mice and Men"));		
+		String isbn = "0140177396";
+		String locatorCode = stockManager.getLocator(isbn);
+		assertEquals("7396J4", locatorCode);
 	}
 	
-	//if data not in database use webservice data 
 	@Test
-	public void webServiceIsUsedIfDataNotInDatabase() {
+	public void databaseIsUsedIdDataIsPresent() {
+		when(testWebService.lookup(anyString())).thenReturn(null);
+		when(testDatabaseService.lookup(anyString())).thenReturn(new Book("0140177396", "J. Steinback", "Of Mice and Men"));	
+		stockManager.getLocator(isbn);
+		verify(testDatabaseService).lookup(isbn);
+		verify(testWebService, never()).lookup(isbn);
+	}
+	
+	
+	@Test 
+	public void testCanGetACorrectLocatorCodeUsingMockitoStub() {
+
+		when(testDatabaseService.lookup("0140177396")).thenReturn(new Book("0140177396", "J. Steinbeck", "Of Mice And Men"));
+		
+		String locatorCode = stockManager.getLocator(isbn);
+		assertEquals("7396J4", locatorCode);
 		
 	}
 	
-	 @Test
-	  public void test() {
-	    List<String> mockList = mock(List.class);
-	    mockList.add("First");
-	    when(mockList.get(0)).thenReturn("Mockito");
-	    when(mockList.get(1)).thenReturn("JCG");
-	    assertEquals("Mockito", mockList.get(0));
-	    assertEquals("JCG", mockList.get(1));
-	  }
+	
 }

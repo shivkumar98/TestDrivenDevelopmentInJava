@@ -15,14 +15,12 @@ public class ValidateISBNTest {
 		assertTrue(validator.checkISBN("0140449116"));
 	}
 	
-	@Test 
+	@Test(expected = NumberFormatException.class)
 	public void testValidateISBN_WhenISBNisNineDigitsLong_ReturnFalse() {
 		ValidateISBN validator = new ValidateISBN();
 
-		assertThrows(NumberFormatException.class,
-				()-> {
-					validator.checkISBN("140449116");
-				});
+		validator.checkISBN("140449116");
+				
 	}
 	
 	@Test
@@ -32,11 +30,11 @@ public class ValidateISBNTest {
 		
 	}
 	
-	@Test
+	@Test(expected = NumberFormatException.class)
 	public void testThat_WhenIsbnContainsNonDigits_CheckIsbnReturnsFalse() {
 		ValidateISBN validator = new ValidateISBN();
-		assertThrows(NumberFormatException.class,() -> {
-				validator.checkISBN("helloworld");});
+		
+				validator.checkISBN("helloworld");;
 	}
 	
 	@Test
